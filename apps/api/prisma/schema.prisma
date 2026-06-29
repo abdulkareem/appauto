@@ -1,0 +1,24 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+enum UserRole { CUSTOMER DRIVER ADMIN }
+enum DocumentType { PROFILE_PHOTO AUTO_PHOTO LICENCE REGISTRATION_CERTIFICATE AADHAAR UPI_QR }
+enum VerificationStatus { PENDING APPROVED REJECTED }
+enum SubscriptionStatus { TRIALING ACTIVE PAST_DUE CANCELLED EXPIRED }
+enum ReportStatus { OPEN IN_REVIEW RESOLVED DISMISSED }
+
+model User { id String @id @default(cuid()) mobile String @unique name String? role UserRole @default(CUSTOMER) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt driver Driver? reviews Review[] favourites Favourite[] messages Message[] reports Report[] notifications Notification[] }
+model Driver { id String @id @default(cuid()) userId String @unique user User @relation(fields: [userId], references: [id]) verificationStatus VerificationStatus @default(PENDING) isAvailable Boolean @default(false) isPremium Boolean @default(false) vehicles Vehicle[] documents DriverDocument[] profile DriverProfile? locations DriverLocation[] subscriptions Subscription[] reviews Review[] }
+model Vehicle { id String @id @default(cuid()) driverId String driver Driver @relation(fields: [driverId], references: [id]) registrationNumber String @unique make String? model String? createdAt DateTime @default(now()) }
+model DriverDocument { id String @id @default(cuid()) driverId String driver Driver @relation(fields: [driverId], references: [id]) type DocumentType url String status VerificationStatus @default(PENDING) createdAt DateTime @default(now()) }
+model DriverProfile { id String @id @default(cuid()) driverId String @unique driver Driver @relation(fields: [driverId], references: [id]) bio String? languages String[] serviceArea String? workingHours Json? upiQrUrl String? createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model DriverLocation { id String @id @default(cuid()) driverId String driver Driver @relation(fields: [driverId], references: [id]) latitude Decimal @db.Decimal(9,6) longitude Decimal @db.Decimal(9,6) sharedAt DateTime @default(now()) @@index([latitude, longitude]) }
+model Subscription { id String @id @default(cuid()) driverId String driver Driver @relation(fields: [driverId], references: [id]) razorpaySubscriptionId String? status SubscriptionStatus amountPaise Int currentPeriodStart DateTime currentPeriodEnd DateTime createdAt DateTime @default(now()) }
+model Review { id String @id @default(cuid()) driverId String driver Driver @relation(fields: [driverId], references: [id]) userId String user User @relation(fields: [userId], references: [id]) rating Int comment String? createdAt DateTime @default(now()) @@unique([driverId, userId]) }
+model Favourite { id String @id @default(cuid()) userId String user User @relation(fields: [userId], references: [id]) driverId String createdAt DateTime @default(now()) @@unique([userId, driverId]) }
+model Chat { id String @id @default(cuid()) customerId String driverId String createdAt DateTime @default(now()) messages Message[] @@unique([customerId, driverId]) }
+model Message { id String @id @default(cuid()) chatId String chat Chat @relation(fields: [chatId], references: [id]) senderId String sender User @relation(fields: [senderId], references: [id]) body String createdAt DateTime @default(now()) }
+model Notification { id String @id @default(cuid()) userId String user User @relation(fields: [userId], references: [id]) title String body String readAt DateTime? createdAt DateTime @default(now()) }
+model Report { id String @id @default(cuid()) reporterId String reporter User @relation(fields: [reporterId], references: [id]) driverId String? reason String status ReportStatus @default(OPEN) createdAt DateTime @default(now()) }
+model AdminUser { id String @id @default(cuid()) email String @unique passwordHash String name String createdAt DateTime @default(now()) }
+model AuditLog { id String @id @default(cuid()) actorId String? action String entity String entityId String? metadata Json? createdAt DateTime @default(now()) }
