@@ -42,6 +42,7 @@
     "ts-jest": "latest",
     "ts-loader": "latest",
     "tsx": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "@types/multer": "latest"
   }
 }
