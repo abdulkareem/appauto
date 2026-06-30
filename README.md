@@ -22,6 +22,10 @@ docker compose up --build
 Web: http://localhost:3000
 API health: http://localhost:4000/health
 
+## Deployment
+
+For step-by-step public launch instructions using Cloudflare Pages, Railway, PostgreSQL, Redis, and production environment variables, see [`docs/public-launch-guide.md`](docs/public-launch-guide.md).
+
 ## Development without Docker
 
 Start PostgreSQL and Redis, set `DATABASE_URL` and `REDIS_URL`, then run:
