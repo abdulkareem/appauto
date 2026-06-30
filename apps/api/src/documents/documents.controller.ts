@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { DocumentsService } from './documents.service';
 import { UploadDriverDocumentDto } from './dto/upload-driver-document.dto';
+import { UploadedFile as DriverUploadedFile } from '../common/types/file-upload';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.DRIVER)
@@ -21,7 +22,7 @@ export class DocumentsController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 5 * 1024 * 1024 } }))
-  upload(@CurrentUser() user: AuthenticatedUser, @Body() dto: UploadDriverDocumentDto, @UploadedFile() file: Express.Multer.File) {
+  upload(@CurrentUser() user: AuthenticatedUser, @Body() dto: UploadDriverDocumentDto, @UploadedFile() file: DriverUploadedFile) {
     return this.documents.uploadMyDocument(user.sub, dto.type, file);
   }
 }

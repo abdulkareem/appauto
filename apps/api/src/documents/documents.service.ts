@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { DocumentType } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
+import { UploadedFile } from '../common/types/file-upload';
 
 const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']);
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
@@ -15,7 +16,7 @@ export class DocumentsService {
     return this.prisma.driverDocument.findMany({ where: { driverId: driver.id }, orderBy: { createdAt: 'desc' } });
   }
 
-  async uploadMyDocument(userId: string, type: DocumentType, file?: Express.Multer.File) {
+  async uploadMyDocument(userId: string, type: DocumentType, file?: UploadedFile) {
     if (!file) throw new BadRequestException('Document file is required');
     if (!ALLOWED_MIME_TYPES.has(file.mimetype)) throw new BadRequestException('Only JPEG, PNG, WebP, or PDF files are allowed');
     if (file.size > MAX_FILE_SIZE_BYTES) throw new BadRequestException('Document must be 5 MB or smaller');

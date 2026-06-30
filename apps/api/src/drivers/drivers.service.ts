@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateDriverProfileDto } from './dto/update-driver-profile.dto';
@@ -29,13 +30,14 @@ export class DriversService {
   async updateMyProfile(userId: string, dto: UpdateDriverProfileDto) {
     const driver = await this.findDriverForUser(userId);
     const { isAvailable, ...profileData } = dto;
+    const data = { ...profileData, workingHours: profileData.workingHours as Prisma.InputJsonValue | undefined };
     if (typeof isAvailable === 'boolean') {
       await this.prisma.driver.update({ where: { id: driver.id }, data: { isAvailable } });
     }
     const profile = await this.prisma.driverProfile.upsert({
       where: { driverId: driver.id },
-      update: profileData,
-      create: { driverId: driver.id, languages: profileData.languages ?? [], ...profileData },
+      update: data,
+      create: { driverId: driver.id, languages: profileData.languages ?? [], ...data },
     });
     return { profile, isAvailable: isAvailable ?? driver.isAvailable };
   }

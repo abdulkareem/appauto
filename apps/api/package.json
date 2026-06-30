@@ -24,8 +24,7 @@
     "helmet": "latest",
     "ioredis": "latest",
     "reflect-metadata": "latest",
-    "rxjs": "latest",
-    "@nestjs/jwt": "latest"
+    "rxjs": "latest"
   },
   "devDependencies": {
     "@nestjs/cli": "latest",

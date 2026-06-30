@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@prisma/client';
 import { randomInt, randomUUID } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -8,12 +7,13 @@ import { RegisterCustomerDto } from './dto/register-customer.dto';
 import { RegisterDriverDto } from './dto/register-driver.dto';
 import { RequestOtpDto } from './dto/request-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { TokenService } from './token.service';
 
 const OTP_TTL_MINUTES = 10;
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService, private readonly jwt: JwtService, private readonly config: ConfigService) {}
+  constructor(private readonly prisma: PrismaService, private readonly tokens: TokenService, private readonly config: ConfigService) {}
 
   async requestOtp(dto: RequestOtpDto) {
     const code = this.config.get('NODE_ENV') === 'production' ? String(randomInt(100000, 999999)) : '123456';
@@ -81,7 +81,7 @@ export class AuthService {
 
   private async issueTokens(userId: string, role: UserRole) {
     const payload = { sub: userId, role };
-    const accessToken = this.jwt.sign(payload, { secret: this.config.getOrThrow<string>('JWT_ACCESS_SECRET'), expiresIn: '15m' });
+    const accessToken = this.tokens.sign(payload, this.config.getOrThrow<string>('JWT_ACCESS_SECRET'), 900);
     const refreshToken = randomUUID();
     await this.prisma.refreshToken.create({ data: { token: refreshToken, userId, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60_000) } });
     return { accessToken, refreshToken, tokenType: 'Bearer', expiresIn: 900 };

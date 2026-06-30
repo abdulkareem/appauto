@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { DriversModule } from './drivers/drivers.module';
 import { DocumentsModule } from './documents/documents.module';
+import { LocationsModule } from './locations/locations.module';
+import { DiscoveryModule } from './discovery/discovery.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { DocumentsModule } from './documents/documents.module';
     AuthModule,
     DriversModule,
     DocumentsModule,
+    LocationsModule,
+    DiscoveryModule,
     HealthModule,
   ],
 })

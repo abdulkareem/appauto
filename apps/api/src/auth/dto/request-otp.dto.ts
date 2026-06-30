@@ -6,5 +6,5 @@ export class RequestOtpDto {
   mobile!: string;
 
   @IsEnum(UserRole)
-  role!: UserRole.CUSTOMER | UserRole.DRIVER;
+  role!: UserRole;
 }
