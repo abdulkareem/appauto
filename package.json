@@ -1,0 +1,19 @@
+{
+  "name": "autoconnect-india",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AutoConnect India driver discovery and digital business platform.",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "docker compose up --build",
+    "dev:web": "npm run dev -w @autoconnect/web",
+    "dev:api": "npm run start:dev -w @autoconnect/api",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "prisma:generate": "npm run prisma:generate -w @autoconnect/api",
+    "prisma:migrate": "npm run prisma:migrate -w @autoconnect/api",
+    "prisma:seed": "npm run prisma:seed -w @autoconnect/api"
+  },
+  "engines": {"node": ">=22.0.0", "npm": ">=10.0.0"}
+}
