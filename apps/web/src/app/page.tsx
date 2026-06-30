@@ -14,6 +14,7 @@ export default function HomePage() {
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           {principles.map((item) => <div key={item} className="rounded-2xl border border-teal-100 bg-teal-50 p-4 text-sm font-medium text-teal-950 dark:border-teal-900 dark:bg-teal-950/40 dark:text-teal-50">{item}</div>)}
         </div>
+      <div className="mt-8 flex flex-wrap gap-3"><a className="rounded-xl bg-brand px-5 py-3 font-semibold text-white" href="/auth">Start with OTP</a><a className="rounded-xl border border-slate-300 px-5 py-3 font-semibold" href="/register/driver">Driver registration</a><a className="rounded-xl border border-slate-300 px-5 py-3 font-semibold" href="/register/customer">Customer registration</a></div>
       </section>
     </main>
   );
