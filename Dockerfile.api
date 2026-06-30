@@ -1,0 +1,9 @@
+FROM node:24-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+COPY apps/api/package.json apps/api/package.json
+RUN npm install
+FROM deps AS build
+COPY . .
+RUN npm run prisma:generate -w @autoconnect/api && npm run build -w @autoconnect/api
+CMD ["npm","run","start","-w","@autoconnect/api"]
