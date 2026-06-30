@@ -1,4 +1,6 @@
+name = "appauto"
+pages_build_output_dir = "apps/web/out"
+
 # Cloudflare Pages configuration.
 # Keep the Pages asset output pointed at Next.js static export output so
 # deployment validation does not upload the internal .next build cache.
-pages_build_output_dir = "apps/web/out"
